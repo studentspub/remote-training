@@ -239,10 +239,12 @@ try {
         }
 
         Schritt 'Basismodell' {
-            if (Test-Path "$Basis\modelle\$Basismodell") { Log "   $Basismodell ist da" }
+            # Das erste Training laedt es selbst (OneDrive, SHA256 geprueft). Eine Kopie in C:\RemoteTraining\modelle
+            # (z.B. per USB) wird stattdessen genommen, wenn sie da ist.
+            if (Test-Path "$Basis\modelle\$Basismodell") { Log "   $Basismodell liegt in C:\RemoteTraining\modelle" }
             else {
-                Log "   $Basismodell fehlt noch - kommt vom Auftraggeber (USB/Link), nach C:\RemoteTraining\modelle kopieren. Vor dem ersten Training noetig." Yellow
-                $Ergebnis['Basismodell'] = 'fehlt noch (vor dem ersten Training nach C:\RemoteTraining\modelle kopieren)'
+                Log "   $Basismodell laedt das erste Training automatisch (einmalig ca. 6,5 GB)"
+                $Ergebnis['Basismodell'] = 'kommt mit dem ersten Training'
             }
         }
 

@@ -27,9 +27,9 @@ Füge sie in PowerShell ein und bestätige die Windows-Abfrage mit **Ja**. Mehr 
 - **Installation:** Die Einrichtung installiert WSL (Linux unter Windows) und eine eigene Linux-Umgebung `RemoteTraining`. Dazu kommen die Trainingssoftware und ein Hintergrunddienst für die Aufträge.
 - **Neustart:** Braucht Windows einen Neustart, startet der Rechner nach 2 Minuten von selbst neu. Abbrechen kannst du mit `shutdown /a`. Nach der Anmeldung läuft die Einrichtung von selbst weiter.
 - **Protokoll:** Am Ende liegt `RemoteTraining_Einrichtung.log` auf dem Desktop. Klappt etwas nicht, holt sich der Auftraggeber das Protokoll selbst. Notfalls schickst du ihm die Datei.
-- **Platzbedarf:** Alles liegt in `C:\RemoteTraining`, insgesamt ca. 25–30 GB.
+- **Platzbedarf:** Alles liegt in `C:\RemoteTraining`, insgesamt ca. 25–30 GB, davon 6,5 GB Basismodell.
 
-Das Basismodell (eine große Datei, ca. 7 GB) bekommst du per USB-Stick oder Link. Kopiere es nach `C:\RemoteTraining\modelle`.
+Das Basismodell (eine große Datei, ca. 6,5 GB) lädt der erste Auftrag einmalig selbst herunter.
 
 ### Schritt 3 – Bedienung
 Auf dem Desktop liegen drei Verknüpfungen:
