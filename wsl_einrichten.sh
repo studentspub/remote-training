@@ -2,6 +2,7 @@
 # wsl_einrichten.sh - Kohya sd-scripts in der WSL-Distribution RemoteTraining einrichten (als root).
 # Wird von einrichten.ps1 aufgerufen; kann gefahrlos mehrfach laufen (fertige Teile werden uebersprungen).
 # Gleiche Version wie auf dem Haupt-PC: sd-scripts-Commit unten, Pakete aus kohya_pakete.txt.
+# Danach der Patch fuers Fortsetzen mit Gradient Accumulation (kohya_patch_fortsetzen.py, Marke RT-PATCH-FORTSETZEN).
 #   --help     nur diese Hilfe
 #   --dry-run  nur anzeigen, nichts installieren
 set -euo pipefail
@@ -15,7 +16,7 @@ PAKETE=$HIER/kohya_pakete.txt
 
 DRY=0
 case "${1:-}" in
-  -h|--help) sed -n '2,6p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+  -h|--help) sed -n '2,7p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
   --dry-run) DRY=1 ;;
 esac
 schritt() { echo; echo "== $*"; }
@@ -36,7 +37,14 @@ if [ ! -d $KOHYA/sd-scripts/.git ]; then tu git clone -q $SD_REPO $KOHYA/sd-scri
 if [ "$DRY" = 0 ] && ! git -C $KOHYA/sd-scripts cat-file -e "$SD_COMMIT^{commit}" 2>/dev/null; then
   tu git -C $KOHYA/sd-scripts fetch -q origin
 fi
+# Patch eines frueheren Laufs zuruecknehmen, sonst scheitert der checkout bei einem neuen Commit; er kommt gleich wieder drauf
+if [ -d $KOHYA/sd-scripts/.git ]; then tu git -C $KOHYA/sd-scripts checkout -q -- train_network.py; fi
 tu git -C $KOHYA/sd-scripts -c advice.detachedHead=false checkout -q $SD_COMMIT
+
+schritt "Kohya-Patch: Fortsetzen mit Gradient Accumulation"
+# Kohya rechnet beim Fortsetzen mit Accumulation > 1 die Epoche und global_step falsch (auch upstream);
+# ohne die Marke faengt der Trainer im normalen Profil nach einem Abbruch neu an
+tu python3 "$HIER/kohya_patch_fortsetzen.py" $KOHYA/sd-scripts
 
 schritt "Python-Pakete (torch, xformers, ... - mehrere GB, dauert)"
 HASH=$(sha256sum "$PAKETE" | cut -d' ' -f1)

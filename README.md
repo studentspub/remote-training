@@ -67,7 +67,8 @@ Auftraggeber die kWh für die Abrechnung aus. CPU und Netzteil sind darin nicht 
 | `einrichten.ps1` | die eigentliche Einrichtung; `-DryRun` zeigt nur an, was passieren würde |
 | `wsl_einrichten.sh` | Trainingssoftware in der Linux-Umgebung (Version wie beim Auftraggeber) |
 | `kohya_pakete.txt` | Paketliste dazu, wird vom Auftraggeber erzeugt |
+| `kohya_patch_fortsetzen.py` | Korrektur in der Trainingssoftware, damit ein abgebrochenes Training an der richtigen Stelle weitermacht (wird von `wsl_einrichten.sh` angewendet) |
 | `remote_modus.ps1` | EIN / AUS / Status (die Desktop-Verknüpfungen) |
 | `runner_start.ps1` | startet den GitHub-Runner bei der Anmeldung, wenn der Remote-Modus an ist |
 
-Alle Skripte zeigen mit `Get-Help .\<datei>.ps1 -Full` ihre Hilfe.
+Alle Skripte zeigen ihre Hilfe: `Get-Help .\<datei>.ps1 -Full`, `wsl_einrichten.sh --help`, `python3 kohya_patch_fortsetzen.py --help`.
