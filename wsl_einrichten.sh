@@ -15,7 +15,7 @@ PAKETE=$HIER/kohya_pakete.txt
 
 DRY=0
 case "${1:-}" in
-  -h|--help) sed -n '2,7p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+  -h|--help) sed -n '2,6p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
   --dry-run) DRY=1 ;;
 esac
 schritt() { echo; echo "== $*"; }
