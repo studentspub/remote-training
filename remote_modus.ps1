@@ -44,10 +44,11 @@ function AcWert([string]$a1, [string]$a2) {
     $w = [regex]::Matches((powercfg /query SCHEME_CURRENT $a1 $a2 | Out-String), '0x[0-9a-fA-F]{8}') | ForEach-Object { [Convert]::ToInt32($_.Value, 16) }
     if ($w.Count -ge 2) { $w[$w.Count - 2] } else { $null }
 }
-function SetzeEnergie([int]$standby, [int]$ruhe, [int]$deckel) {
-    powercfg /setacvalueindex SCHEME_CURRENT SUB_SLEEP STANDBYIDLE $standby
-    powercfg /setacvalueindex SCHEME_CURRENT SUB_SLEEP HIBERNATEIDLE $ruhe
-    powercfg /setacvalueindex SCHEME_CURRENT SUB_BUTTONS LIDACTION $deckel
+function SetzeEnergie($standby, $ruhe, $deckel) {
+    # $null = Wert war nicht lesbar -> nicht anfassen (Laptop 12.10.2026: LIDACTION liefert nichts)
+    if ($null -ne $standby) { powercfg /setacvalueindex SCHEME_CURRENT SUB_SLEEP STANDBYIDLE $standby }
+    if ($null -ne $ruhe) { powercfg /setacvalueindex SCHEME_CURRENT SUB_SLEEP HIBERNATEIDLE $ruhe }
+    if ($null -ne $deckel) { powercfg /setacvalueindex SCHEME_CURRENT SUB_BUTTONS LIDACTION $deckel }
     powercfg /setactive SCHEME_CURRENT
 }
 function RunnerProzesse {
@@ -62,7 +63,8 @@ switch ($Aktion) {
         if (-not $z.aktiv) {
             $z.energie_alt = [pscustomobject]@{ standby = (AcWert SUB_SLEEP STANDBYIDLE); ruhe = (AcWert SUB_SLEEP HIBERNATEIDLE); deckel = (AcWert SUB_BUTTONS LIDACTION) }
         }
-        Tu 'Energiesparmodus/Ruhezustand am Netz auf "nie", Deckel zuklappen auf "nichts tun"' { SetzeEnergie 0 0 0 }
+        $deckelNeu = if ($null -ne $z.energie_alt.deckel) { 0 } else { $null }
+        Tu 'Energiesparmodus/Ruhezustand am Netz auf "nie", Deckel zuklappen auf "nichts tun" (wenn lesbar)' { SetzeEnergie 0 0 $deckelNeu }
         $z.aktiv = $true
         $z.seit = (Get-Date).ToString('s')
         Schreib $z
