@@ -92,7 +92,10 @@ $ruhe = Hex2 SUB_SLEEP HIBERNATEIDLE
 $deckel = Hex2 SUB_BUTTONS LIDACTION
 Z "  Energiesparmodus nach: $(if ($standby -eq 0) { 'nie' } elseif ($standby) { "$([int]($standby / 60)) min" } else { '?' })"
 Z "  Ruhezustand nach:      $(if ($ruhe -eq 0) { 'nie' } elseif ($ruhe) { "$([int]($ruhe / 60)) min" } else { '?' })"
-if ($laptop) { Z "  Deckel zuklappen:      $(@('nichts tun', 'Energie sparen', 'Ruhezustand', 'Herunterfahren')[$deckel])" }
+if ($laptop) {
+    $namen = @('nichts tun', 'Energie sparen', 'Ruhezustand', 'Herunterfahren', 'Bildschirm ausschalten')
+    Z "  Deckel zuklappen:      $(if ($null -eq $deckel) { '?' } elseif ($deckel -lt $namen.Count) { $namen[$deckel] } else { "Wert $deckel" })"
+}
 
 $datei = Join-Path $Ausgabe 'RemoteTraining_Inventar.txt'
 $zeilen | Set-Content -Path $datei -Encoding UTF8
