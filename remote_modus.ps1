@@ -40,8 +40,9 @@ function Tu([string]$was, [scriptblock]$aktion) {
     if ($DryRun) { Write-Host "[dry-run] wuerde: $was" -ForegroundColor Yellow } else { & $aktion }
 }
 function AcWert([string]$a1, [string]$a2) {
-    # powercfg ist lokalisiert - die letzten zwei Hex-Werte sind immer Netz (AC) und Akku (DC)
-    $w = [regex]::Matches((powercfg /query SCHEME_CURRENT $a1 $a2 | Out-String), '0x[0-9a-fA-F]{8}') | ForEach-Object { [Convert]::ToInt32($_.Value, 16) }
+    # powercfg ist lokalisiert - die letzten zwei Hex-Werte sind immer Netz (AC) und Akku (DC).
+    # /qh statt /query: zeigt auch versteckte Einstellungen (Deckel zuklappen ist versteckt)
+    $w = [regex]::Matches((powercfg /qh SCHEME_CURRENT $a1 $a2 | Out-String), '0x[0-9a-fA-F]{8}') | ForEach-Object { [Convert]::ToInt32($_.Value, 16) }
     if ($w.Count -ge 2) { $w[$w.Count - 2] } else { $null }
 }
 function SetzeEnergie($standby, $ruhe, $deckel) {

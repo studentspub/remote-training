@@ -24,6 +24,7 @@ tu() { echo "+ $*"; if [ "$DRY" = 0 ]; then "$@"; fi; }
 
 schritt "Systempakete"
 export DEBIAN_FRONTEND=noninteractive
+export PYTHONUNBUFFERED=1   # pip-Ausgabe sofort ins Log (sonst stimmen die Zeitstempel nicht)
 tu apt-get update -q
 tu apt-get install -y -q python3-venv python3-pip git p7zip-full curl ca-certificates
 

@@ -20,8 +20,9 @@ $env:WSL_UTF8 = '1'
 $zeilen = New-Object System.Collections.Generic.List[string]
 function Z([string]$text) { $zeilen.Add($text); Write-Host $text }
 function Hex2([string]$alias1, [string]$alias2) {
-    # powercfg ist lokalisiert - die letzten zwei Hex-Werte sind immer Netz (AC) und Akku (DC)
-    $werte = [regex]::Matches((powercfg /query SCHEME_CURRENT $alias1 $alias2 | Out-String), '0x[0-9a-fA-F]{8}') | ForEach-Object { [Convert]::ToInt32($_.Value, 16) }
+    # powercfg ist lokalisiert - die letzten zwei Hex-Werte sind immer Netz (AC) und Akku (DC).
+    # /qh statt /query: zeigt auch versteckte Einstellungen (Deckel zuklappen ist versteckt)
+    $werte = [regex]::Matches((powercfg /qh SCHEME_CURRENT $alias1 $alias2 | Out-String), '0x[0-9a-fA-F]{8}') | ForEach-Object { [Convert]::ToInt32($_.Value, 16) }
     if ($werte.Count -ge 2) { $werte[$werte.Count - 2] } else { $null }
 }
 
