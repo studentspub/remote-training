@@ -4,16 +4,17 @@ Liest aus, ob dieser Rechner fuer das Remote-Training taugt. Aendert nichts.
 
 .DESCRIPTION
 Zeigt Windows-Version, Prozessor, Arbeitsspeicher, freien Speicher, Grafikkarte, WSL-Stand, Kontotyp und
-Energieeinstellungen und schreibt dasselbe in RemoteTraining_Inventar.txt (Standard: Desktop).
-Diese Datei bitte an den Auftraggeber schicken. Sie enthaelt keine Seriennummern, E-Mail-Adressen oder Passwoerter.
+Energieeinstellungen und legt dasselbe in die Zwischenablage - einfach mit Strg+V in die Nachricht an den
+Auftraggeber einfuegen. Es wird keine Datei angelegt (ausser mit -Ausgabe). Der Text enthaelt keine Seriennummern,
+E-Mail-Adressen oder Passwoerter.
 
 Aufruf ohne Download (PowerShell, kein Administrator noetig):
   irm https://raw.githubusercontent.com/studentspub/remote-training/main/inventar.ps1 | iex
 
 .PARAMETER Ausgabe
-Ordner fuer RemoteTraining_Inventar.txt (Standard: Desktop).
+Ordner, in den RemoteTraining_Inventar.txt geschrieben wird (Einrichtung und Pruef-Job). Ohne: nur Zwischenablage.
 #>
-param([string]$Ausgabe = [Environment]::GetFolderPath('Desktop'))
+param([string]$Ausgabe = '')
 
 $ErrorActionPreference = 'SilentlyContinue'
 $env:WSL_UTF8 = '1'
@@ -98,7 +99,16 @@ if ($laptop) {
     Z "  Deckel zuklappen:      $(if ($null -eq $deckel) { '?' } elseif ($deckel -lt $namen.Count) { $namen[$deckel] } else { "Wert $deckel" })"
 }
 
-$datei = Join-Path $Ausgabe 'RemoteTraining_Inventar.txt'
-$zeilen | Set-Content -Path $datei -Encoding UTF8
 Write-Host ''
-Write-Host "Gespeichert: $datei - bitte an den Auftraggeber schicken." -ForegroundColor Green
+if ($Ausgabe) {
+    $datei = Join-Path $Ausgabe 'RemoteTraining_Inventar.txt'
+    $zeilen | Set-Content -Path $datei -Encoding UTF8
+    Write-Host "Gespeichert: $datei" -ForegroundColor Green
+} else {
+    try {
+        $zeilen -join "`r`n" | Set-Clipboard
+        Write-Host 'Liegt in der Zwischenablage - einfach mit Strg+V in die Nachricht an den Auftraggeber einfuegen.' -ForegroundColor Green
+    } catch {
+        Write-Host 'Zwischenablage ging nicht - bitte den Text oben markieren und kopieren.' -ForegroundColor Yellow
+    }
+}

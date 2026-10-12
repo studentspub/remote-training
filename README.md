@@ -13,8 +13,8 @@ PowerShell öffnen (Start → „PowerShell“ tippen → Enter), diese Zeile ei
 irm https://raw.githubusercontent.com/studentspub/remote-training/main/inventar.ps1 | iex
 ```
 
-Das liest nur aus und ändert nichts. Auf dem Desktop liegt danach `RemoteTraining_Inventar.txt`. Schick sie dem Auftraggeber.
-Die Datei enthält keine Seriennummern, E-Mail-Adressen oder Passwörter.
+Das liest nur aus und ändert nichts. Das Ergebnis liegt danach in der **Zwischenablage**. Füge es mit Strg+V in eine Nachricht an den Auftraggeber ein, etwa per WhatsApp oder Mail. Es wird keine Datei angelegt.
+Der Text enthält keine Seriennummern, E-Mail-Adressen oder Passwörter.
 
 ### Schritt 2 – Einrichten (ohne Eingriff, ca. 15–30 Minuten)
 Der Auftraggeber schickt dir **eine** Zeile. Sie enthält einen Schlüssel, der 1 Stunde gilt. Sie sieht so aus:
@@ -26,7 +26,7 @@ Der Auftraggeber schickt dir **eine** Zeile. Sie enthält einen Schlüssel, der 
 Füge sie in PowerShell ein und bestätige die Windows-Abfrage mit **Ja**. Mehr musst du nicht tun:
 - **Installation:** Die Einrichtung installiert WSL (Linux unter Windows) und eine eigene Linux-Umgebung `RemoteTraining`. Dazu kommen die Trainingssoftware und ein Hintergrunddienst für die Aufträge.
 - **Neustart:** Braucht Windows einen Neustart, startet der Rechner nach 2 Minuten von selbst neu. Abbrechen kannst du mit `shutdown /a`. Nach der Anmeldung läuft die Einrichtung von selbst weiter.
-- **Protokoll:** Am Ende liegt `RemoteTraining_Einrichtung.log` auf dem Desktop. Klappt etwas nicht, holt sich der Auftraggeber das Protokoll selbst. Notfalls schickst du ihm die Datei.
+- **Protokoll:** Der Auftraggeber holt sich das Protokoll selbst. Nur wenn etwas schiefgeht, liegt zusätzlich `RemoteTraining_Einrichtung.log` auf dem Desktop. Die schickst du ihm dann.
 - **Platzbedarf:** Alles liegt in `C:\RemoteTraining`, insgesamt ca. 25–30 GB, davon 6,5 GB Basismodell.
 
 Das Basismodell (eine große Datei, ca. 6,5 GB) lädt der erste Auftrag einmalig selbst herunter.

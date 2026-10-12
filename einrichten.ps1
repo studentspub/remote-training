@@ -13,7 +13,7 @@ Wird normalerweise von start.ps1 gestartet (Startzeile vom Auftraggeber). Schrit
   5. Kohya sd-scripts mit allen Paketen in der Distribution (wsl_einrichten.sh), GPU-Test
   6. Desktop-Verknuepfungen "Remote-Modus EIN/AUS/Status", Remote-Modus einschalten
 Laeuft mehrfach gefahrlos (fertige Schritte werden uebersprungen). Log: C:\RemoteTraining\logs\einrichtung_*.log,
-am Ende auch als RemoteTraining_Einrichtung.log auf dem Desktop.
+nur bei einem Fehler zusaetzlich als RemoteTraining_Einrichtung.log auf dem Desktop.
 
 .PARAMETER Token
 Runner-Registrierungstoken vom Auftraggeber (1 h gueltig, nur einmal nutzbar).
@@ -277,7 +277,10 @@ try {
     Log ''
     Log "Ergebnis nach $dauer min:" White
     foreach ($e in $Ergebnis.GetEnumerator()) { Log ("  {0,-28} {1}" -f $e.Key, $e.Value) $(if ("$($e.Value)" -like 'FEHLER*') { 'Red' } else { 'White' }) }
-    if (-not $DryRun) { Copy-Item $LogDatei "$([Environment]::GetFolderPath('Desktop'))\RemoteTraining_Einrichtung.log" -Force -ErrorAction SilentlyContinue }
+    # Kopie auf dem Desktop nur bei einem Fehler - sonst holt der Auftraggeber das Log selbst (Pruef-Job)
+    if (-not $DryRun -and -not $ok -and -not $script:Neustart) {
+        Copy-Item $LogDatei "$([Environment]::GetFolderPath('Desktop'))\RemoteTraining_Einrichtung.log" -Force -ErrorAction SilentlyContinue
+    }
     if ($DryRun) {
         Log 'Testmodus beendet - es wurde nichts geaendert.' Yellow
     } elseif ($script:Neustart) {
@@ -286,6 +289,7 @@ try {
         Log 'Fertig. Der Remote-Modus ist EIN - ausschalten jederzeit mit "Remote-Modus AUS" auf dem Desktop.' Green
     } else {
         Log 'Die Einrichtung ist nicht durchgelaufen. Bitte RemoteTraining_Einrichtung.log vom Desktop an den Auftraggeber schicken.' Red
+        Log '(Laeuft der Runner schon, holt der Auftraggeber es sich auch selbst.)' Red
     }
     if (-not $DryRun -and [Environment]::UserInteractive) { Read-Host 'Enter zum Schliessen' | Out-Null }
 }
