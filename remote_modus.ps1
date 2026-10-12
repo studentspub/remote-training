@@ -9,7 +9,8 @@ ein     Energiesparmodus und Ruhezustand am Netz auf "nie", Deckel zuklappen auf
 aus     Sofort: Training beenden (nur die Distribution RemoteTraining, anderes WSL/Docker bleibt), Runner beenden,
         Energieeinstellungen zuruecksetzen. Ein abgebrochenes Training macht spaeter beim letzten Stand weiter.
 status  Zeigt Remote-Modus, Runner, laufendes Training, Energieeinstellungen, Basismodell.
-Kein Administrator noetig. Die Desktop-Verknuepfungen "Remote-Modus EIN/AUS/Status" rufen dieses Skript auf.
+Kein Administrator noetig. Die Desktop-Verknuepfungen "Remote-Modus EIN/AUS/Status" und der farbige Punkt in der
+Taskleiste (tray.ps1) rufen dieses Skript auf; es startet den Punkt auch, falls er noch nicht laeuft.
 
 .PARAMETER Aktion
 ein | aus | status (Standard status)
@@ -25,6 +26,7 @@ param([ValidateSet('ein', 'aus', 'status')][string]$Aktion = 'status', [switch]$
 $Basis = 'C:\RemoteTraining'
 $Distro = 'RemoteTraining'
 $AufgabeRunner = 'RemoteTraining Runner'
+$AufgabeTray = 'RemoteTraining Tray'
 $Datei = "$Basis\remote_modus.json"
 $env:WSL_UTF8 = '1'
 
@@ -54,6 +56,24 @@ function SetzeEnergie($standby, $ruhe, $deckel) {
 }
 function RunnerProzesse {
     Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -like '*RemoteTraining\runner*' -or $_.CommandLine -like '*runner_start.ps1*' }
+}
+function TrayStarten {
+    # Farbiger Punkt in der Taskleiste (tray.ps1): eigene Aufgabe bei der Anmeldung, ohne Adminrechte.
+    # Legt die Aufgabe an, falls sie fehlt - so bekommen auch schon eingerichtete Rechner die Anzeige.
+    if ($DryRun -or -not (Test-Path "$PSScriptRoot\tray.ps1")) { return }
+    if (Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" | Where-Object { $_.CommandLine -like '*tray.ps1*' }) { return }
+    try {
+        if (-not (Get-ScheduledTask -TaskName $AufgabeTray -ErrorAction SilentlyContinue)) {
+            $benutzer = "$env:USERDOMAIN\$env:USERNAME"
+            $aktion = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$PSScriptRoot\tray.ps1`""
+            $einst = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit ([TimeSpan]::Zero) -MultipleInstances IgnoreNew
+            Register-ScheduledTask -TaskName $AufgabeTray -Action $aktion -Trigger (New-ScheduledTaskTrigger -AtLogOn -User $benutzer) `
+                -Principal (New-ScheduledTaskPrincipal -UserId $benutzer -LogonType Interactive -RunLevel Limited) -Settings $einst -Force | Out-Null
+        }
+        Start-ScheduledTask -TaskName $AufgabeTray
+    } catch {
+        Start-Process powershell.exe -WindowStyle Hidden -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSScriptRoot\tray.ps1`""
+    }
 }
 function Minuten($s) { if ($null -eq $s) { '?' } elseif ($s -eq 0) { 'nie' } else { "$([int]($s / 60)) min" } }
 
@@ -98,4 +118,5 @@ switch ($Aktion) {
         Write-Host "Basismodelle:   $(if ($modelle) { $modelle -join ', ' } else { 'keins in C:\RemoteTraining\modelle' })"
     }
 }
+if (Test-Path "$Basis\runner\.runner") { TrayStarten }
 if ($Warten) { Start-Sleep -Seconds 6 }

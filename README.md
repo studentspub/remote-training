@@ -32,7 +32,18 @@ Füge sie in PowerShell ein und bestätige die Windows-Abfrage mit **Ja**. Mehr 
 Das Basismodell (eine große Datei, ca. 6,5 GB) lädt der erste Auftrag einmalig selbst herunter.
 
 ### Schritt 3 – Bedienung
-Auf dem Desktop liegen drei Verknüpfungen:
+Unten rechts in der Taskleiste (Infobereich, evtl. hinter dem Pfeil ^) zeigt ein **farbiger Punkt**, was los ist:
+
+| Punkt | Bedeutung |
+|---|---|
+| 🟢 grün | Remote-Modus EIN, der Rechner ist frei und wartet auf Aufträge |
+| 🔴 rot | Der Rechner arbeitet gerade (Training läuft) |
+| 🟡 gelb | Remote-Modus EIN, startet gerade |
+| ⚪ grau | Remote-Modus AUS, der Rechner gehört dir |
+
+**Rechtsklick** auf den Punkt: Remote-Modus EIN / AUS / Status. Nach der Anmeldung und bei jedem Wechsel erscheint eine kurze Meldung.
+
+Dasselbe geht auch über die drei Verknüpfungen auf dem Desktop:
 
 | Verknüpfung | Was passiert |
 |---|---|
@@ -54,7 +65,7 @@ Auftraggeber die kWh für die Abrechnung aus. CPU und Netzteil sind darin nicht 
 ### Wieder entfernen
 1. **Remote-Modus AUS** klicken.
 2. In PowerShell `wsl --unregister RemoteTraining` ausführen. Das löscht die Linux-Umgebung des Remote-Trainings, dein eigenes WSL bleibt.
-3. Die Aufgaben „RemoteTraining Runner“ und gegebenenfalls „RemoteTraining Einrichtung fortsetzen“ in der Aufgabenplanung löschen.
+3. Die Aufgaben „RemoteTraining Runner“, „RemoteTraining Tray“ und gegebenenfalls „RemoteTraining Einrichtung fortsetzen“ in der Aufgabenplanung löschen.
 4. Den Ordner `C:\RemoteTraining` und die drei Verknüpfungen löschen.
 5. Gegebenenfalls die Zeile `memory=...` in `%UserProfile%\.wslconfig` entfernen. Eine Sicherung liegt daneben als `.wslconfig.vor_remotetraining`.
 
@@ -70,5 +81,6 @@ Auftraggeber die kWh für die Abrechnung aus. CPU und Netzteil sind darin nicht 
 | `kohya_patch_fortsetzen.py` | Korrektur in der Trainingssoftware, damit ein abgebrochenes Training an der richtigen Stelle weitermacht (wird von `wsl_einrichten.sh` angewendet) |
 | `remote_modus.ps1` | EIN / AUS / Status (die Desktop-Verknüpfungen) |
 | `runner_start.ps1` | startet den GitHub-Runner bei der Anmeldung, wenn der Remote-Modus an ist |
+| `tray.ps1` | farbiger Punkt in der Taskleiste mit Menü (startet bei der Anmeldung) |
 
 Alle Skripte zeigen ihre Hilfe: `Get-Help .\<datei>.ps1 -Full`, `wsl_einrichten.sh --help`, `python3 kohya_patch_fortsetzen.py --help`.
