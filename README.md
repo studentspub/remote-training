@@ -13,7 +13,7 @@ PowerShell öffnen (Start → „PowerShell“ tippen → Enter), diese Zeile ei
 irm https://raw.githubusercontent.com/studentspub/remote-training/main/inventar.ps1 | iex
 ```
 
-Das liest nur aus und ändert nichts. Das Ergebnis liegt danach in der **Zwischenablage**. Füge es mit Strg+V in eine Nachricht an den Auftraggeber ein, etwa per WhatsApp oder Mail. Es wird keine Datei angelegt.
+Das liest nur aus und ändert nichts. Das Ergebnis liegt danach in der **Zwischenablage**. Füge es mit Strg+V in eine Nachricht an den Auftraggeber ein, etwa per WhatsApp oder Mail. Hast du inzwischen etwas anderes kopiert: Dieselben Angaben stehen auch in `C:\RemoteTraining\RemoteTraining_Inventar.txt`.
 Der Text enthält keine Seriennummern, E-Mail-Adressen oder Passwörter.
 
 ### Schritt 2 – Einrichten (ohne Eingriff, ca. 15–30 Minuten)
