@@ -6,6 +6,8 @@ Dein Rechner baut nur eine ausgehende Verbindung zu GitHub auf.
 
 ## Für dich als Rechner-Besitzer
 
+**Spickzettel (eine Seite, zum Ausdrucken):** [spickzettel/Spickzettel_Remote-Training.pdf](spickzettel/Spickzettel_Remote-Training.pdf)
+
 ### Schritt 1 – Taugt mein Rechner? (optional, 1 Minute)
 PowerShell öffnen (Start → „PowerShell“ tippen → Enter), diese Zeile einfügen, Enter:
 

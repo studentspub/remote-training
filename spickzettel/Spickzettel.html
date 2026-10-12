@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Remote-Training Spickzettel</title>
+<!--
+  Quelle fuer Spickzettel_Remote-Training.pdf (eine A4-Seite fuer die Freunde).
+  PDF neu erzeugen (Windows, Edge ist vorinstalliert):
+    "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --headless --disable-gpu --no-pdf-header-footer
+      --print-to-pdf="D:\git\remote-training\spickzettel\Spickzettel_Remote-Training.pdf"
+      "D:\git\remote-training\spickzettel\Spickzettel.html"
+-->
+<style>
+  @page { size: A4; margin: 0; }
+  :root {
+    --tinte: #1d2a33;      /* Text */
+    --leise: #5b6b76;      /* Nebentext */
+    --linie: #d5dde2;
+    --flaeche: #f1f5f7;    /* Kaesten */
+    --akzent: #0f5f73;     /* Petrol: Ueberschriften, Kopf */
+    --gruen: #16a34a; --rot: #dc2626; --gelb: #e0a800; --grau: #9aa5ad;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #fff; color: var(--tinte); }
+  body { font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; font-size: 9.3pt; line-height: 1.34; }
+  .seite { width: 210mm; height: 296mm; padding: 9mm 13mm 7mm; display: flex; flex-direction: column; gap: 3.4mm; overflow: hidden; }
+
+  header { background: var(--akzent); color: #fff; border-radius: 3mm; padding: 4.4mm 6mm 4mm; display: flex; justify-content: space-between; align-items: flex-end; gap: 6mm; }
+  header h1 { margin: 0; font-size: 21pt; font-weight: 700; letter-spacing: -0.2pt; line-height: 1.05; }
+  header p { margin: 1.4mm 0 0; font-size: 10pt; opacity: .92; }
+  header .kurz { text-align: right; font-size: 9pt; line-height: 1.35; opacity: .95; white-space: nowrap; }
+  header .kurz b { font-size: 10.5pt; }
+
+  h2 { margin: 0 0 1.8mm; font-size: 11.5pt; color: var(--akzent); font-weight: 700; letter-spacing: .1pt; }
+  .hinweis { color: var(--leise); font-size: 8.8pt; }
+
+  /* Ampel */
+  .ampel { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.6mm; }
+  .zustand { border: .3mm solid var(--linie); border-radius: 2.4mm; padding: 2.4mm 3mm; display: flex; flex-direction: column; gap: 1mm; }
+  .zustand .kopf { display: flex; align-items: center; gap: 2mm; font-weight: 700; font-size: 10.5pt; }
+  .punkt { width: 5.2mm; height: 5.2mm; border-radius: 50%; flex: none; box-shadow: inset 0 0 0 .35mm rgba(0,0,0,.18); }
+  .p-gruen { background: var(--gruen); } .p-rot { background: var(--rot); } .p-gelb { background: var(--gelb); } .p-grau { background: var(--grau); }
+  .zustand .tun { color: var(--leise); font-size: 8.8pt; }
+
+  .bedienen { display: grid; grid-template-columns: 1.15fr 1fr; gap: 4mm; align-items: start; }
+  .menue { border: .3mm solid var(--linie); border-radius: 2mm; overflow: hidden; font-size: 9.2pt; }
+  .menue div { padding: 1.5mm 3mm; border-top: .3mm solid var(--linie); }
+  .menue div:first-child { border-top: 0; background: var(--flaeche); color: var(--leise); font-size: 8.4pt; }
+  .menue b { color: var(--tinte); }
+
+  /* Situationen */
+  .lagen { display: grid; grid-template-columns: 1fr 1fr; gap: 2.6mm; }
+  .lage { background: var(--flaeche); border-radius: 2.4mm; padding: 2.4mm 3.4mm; }
+  .lage .frage { font-weight: 700; margin-bottom: .8mm; }
+  .lage .antwort b { white-space: nowrap; }
+  .marke { display: inline-block; font-weight: 700; font-size: 8.4pt; padding: .2mm 1.6mm; border-radius: 1mm; color: #fff; vertical-align: .2mm; }
+  .m-aus { background: var(--grau); } .m-ein { background: var(--gruen); }
+  kbd { font-family: inherit; font-size: 8.4pt; border: .3mm solid #b8c3ca; border-bottom-width: .6mm; border-radius: 1mm; padding: 0 1.2mm; background: #fff; }
+  .warn { color: var(--rot); font-weight: 700; }
+
+  ul { margin: 0; padding-left: 4.2mm; display: grid; gap: 1.1mm; }
+  li::marker { color: var(--akzent); }
+  .zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+
+  footer { margin-top: auto; border-top: .3mm solid var(--linie); padding-top: 2.4mm; display: flex; justify-content: space-between; gap: 4mm; color: var(--leise); font-size: 8.4pt; }
+  footer b { color: var(--tinte); }
+  code { font-family: Consolas, "Cascadia Mono", monospace; font-size: 8.6pt; }
+</style>
+</head>
+<body>
+<div class="seite">
+
+  <header>
+    <div>
+      <h1>Remote-Training – Spickzettel</h1>
+      <p>Dein PC trainiert in seiner freien Zeit Bild-Modelle (LoRAs). Du kannst ihn jederzeit sofort zurückholen.</p>
+    </div>
+    <div class="kurz"><b>Kurz:</b> weggehen → EIN + sperren<br>selbst nutzen → AUS</div>
+  </header>
+
+  <section>
+    <h2>Der Punkt unten rechts in der Taskleiste</h2>
+    <div class="ampel">
+      <div class="zustand"><div class="kopf"><span class="punkt p-gruen"></span>Grün</div>Remote-Modus EIN, PC ist frei und wartet auf Aufträge.<span class="tun">Du kannst ihn trotzdem jederzeit nutzen – vorher AUS.</span></div>
+      <div class="zustand"><div class="kopf"><span class="punkt p-rot"></span>Rot</div>Der PC arbeitet gerade, ein Training läuft.<span class="tun">Grafikkarte ist voll belegt – zum Spielen AUS klicken.</span></div>
+      <div class="zustand"><div class="kopf"><span class="punkt p-gelb"></span>Gelb</div>Remote-Modus EIN, startet gerade.<span class="tun">Kurz warten, wird gleich grün.</span></div>
+      <div class="zustand"><div class="kopf"><span class="punkt p-grau"></span>Grau</div>Remote-Modus AUS, der PC gehört dir.<span class="tun">Es läuft nichts für das Training.</span></div>
+    </div>
+    <p class="hinweis" style="margin:1.6mm 0 0">Punkt nicht zu sehen? Er liegt evtl. hinter dem Pfeil <kbd>^</kbd> neben der Uhr. Dauerhaft anzeigen: Einstellungen → Personalisierung → Taskleiste → Andere Symbole der Taskleiste → „Windows PowerShell“ einschalten.</p>
+  </section>
+
+  <section class="bedienen">
+    <div>
+      <h2>Bedienen</h2>
+      <p style="margin:0 0 1.6mm"><b>Rechtsklick auf den Punkt</b> öffnet das Menü. Dasselbe geht über die drei Verknüpfungen auf dem Desktop: <i>Remote-Modus EIN</i>, <i>Remote-Modus AUS</i>, <i>Remote-Modus Status</i>.</p>
+      <p class="hinweis" style="margin:0">Doppelklick auf den Punkt zeigt kurz, was gerade los ist.</p>
+    </div>
+    <div class="menue">
+      <div>Rechtsklick auf den Punkt</div>
+      <div><b>Remote-Modus EIN</b> – PC nimmt Aufträge an</div>
+      <div><b>Remote-Modus AUS</b> – Training stoppt sofort</div>
+      <div><b>Status anzeigen</b> – Modus, Training, Energie</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Was tun, wenn …</h2>
+    <div class="lagen">
+      <div class="lage"><div class="frage">… ich selbst spielen oder arbeiten will?</div><div class="antwort"><span class="marke m-aus">AUS</span> klicken. Ein laufendes Training stoppt sofort, die Grafikkarte ist frei. Später geht es beim letzten Zwischenstand weiter – verloren sind höchstens die letzten Minuten.</div></div>
+      <div class="lage"><div class="frage">… ich weggehe oder schlafen gehe?</div><div class="antwort"><span class="marke m-ein">EIN</span> klicken und den Bildschirm sperren: <kbd>Windows</kbd> + <kbd>L</kbd>. <span class="warn">Nicht abmelden</span> – abgemeldet läuft nichts. Rechner eingeschaltet lassen.</div></div>
+      <div class="lage"><div class="frage">… ich einen Laptop benutze?</div><div class="antwort">Nur am <b>Netzteil</b> im Remote-Modus lassen. Deckel zuklappen ist dann ok – der Laptop geht nicht schlafen, solange EIN ist.</div></div>
+      <div class="lage"><div class="frage">… ich per Fernzugriff (Remotedesktop) drauf bin?</div><div class="antwort">Zum Gehen nur das Fenster mit dem <b>X</b> schließen, <span class="warn">nicht abmelden</span>. Die Sitzung läuft dann weiter.</div></div>
+      <div class="lage"><div class="frage">… Windows neu startet (z. B. Update)?</div><div class="antwort">Einfach wieder anmelden. Der Modus bleibt, wie er war: war er EIN, nimmt der PC nach der Anmeldung wieder Aufträge an.</div></div>
+      <div class="lage"><div class="frage">… der Punkt verschwunden ist?</div><div class="antwort">Auf dem Desktop <i>Remote-Modus Status</i> doppelklicken – dann erscheint der Punkt wieder.</div></div>
+    </div>
+  </section>
+
+  <section class="zwei">
+    <div>
+      <h2>Gut zu wissen</h2>
+      <ul>
+        <li>Bei <b>EIN</b> werden Energiesparmodus und Ruhezustand am Netz abgeschaltet, bei <b>AUS</b> kommen deine alten Einstellungen zurück.</li>
+        <li>Alles liegt in <code>C:\RemoteTraining</code> (ca. 25–30 GB) und in einer eigenen Linux-Umgebung „RemoteTraining“. Dein eigenes WSL oder Docker bleibt unberührt.</li>
+        <li>Die Skripte lesen und senden keine eigenen Dateien von dir. Zurück gehen nur fertige Modelle, Protokolle und Messwerte.</li>
+      </ul>
+    </div>
+    <div>
+      <h2 style="visibility:hidden">.</h2>
+      <ul>
+        <li><b>Strom:</b> Jedes Training misst den Verbrauch der Grafikkarte. Darüber rechnen wir ab (CPU und Netzteil sind nicht mitgezählt).</li>
+        <li>Kein GitHub-Konto, kein VPN, keine Portfreigabe: Dein PC baut nur eine ausgehende Verbindung zu GitHub auf.</li>
+        <li><b>Probleme?</b> <i>Remote-Modus Status</i> öffnen und mir einen Screenshot schicken.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <span>Anleitung, Einrichtung und Entfernen: <b>github.com/studentspub/remote-training</b></span>
+    <span>Stand 12.10.2026</span>
+  </footer>
+
+</div>
+</body>
+</html>
